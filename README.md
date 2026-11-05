@@ -104,6 +104,27 @@ export const PERSONAS: Record<string, Persona> = {
 
 ---
 
+## 🎮 Segunda web: Baby Engineer vs. Data Engineer
+
+Trivia arcade pixel art de 15 preguntas, independiente del juego de fotos. Vive en `arcade/index.html` + [`src/arcade/`](src/arcade/) y se abre en:
+
+- Local: `http://localhost:5173/arcade/` (`npm run dev`) o `http://localhost:4173/arcade/` (`npm run build` + `npm run preview`)
+- Publicada: `https://<tu-usuario>.github.io/babyshower-dannais/arcade/`
+
+| Tecla | Acción |
+| --- | --- |
+| `Enter` / `Espacio` | START, saltar la cortinilla, siguiente pregunta, volver a jugar |
+| `A` `B` `C` (o `1` `2` `3`) | Elegir alternativa (también con clic) |
+| `M` | Música on/off |
+| `S` | Silenciar todo |
+| `F` | Pantalla completa |
+
+- **Preguntas:** en [`src/arcade/preguntas.ts`](src/arcade/preguntas.ts). El juego alterna Data y Baby y deja el bonus del padrino al final. 100 puntos por acierto y 300 en el bonus (máximo 1700).
+- **Música y efectos:** sintetizados en el navegador con Web Audio (melodía chiptune original, sin archivos de audio). La música arranca al presionar START.
+- **HI-SCORE:** se guarda en el navegador.
+
+---
+
 ## Publicar en GitHub Pages
 
 La configuración ya usa rutas relativas (`base: './'`), así que funciona con cualquier nombre de repositorio.

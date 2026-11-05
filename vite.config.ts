@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -9,6 +10,11 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
+      // Dos webs independientes: el juego de fotos (/) y la trivia arcade (/arcade/).
+      input: {
+        principal: fileURLToPath(new URL('./index.html', import.meta.url)),
+        arcade: fileURLToPath(new URL('./arcade/index.html', import.meta.url)),
+      },
       output: {
         // Las fotos se publican sin el nombre de la persona, para no arruinar la sorpresa.
         assetFileNames: (asset) =>

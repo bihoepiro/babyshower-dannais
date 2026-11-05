@@ -1,0 +1,1465 @@
+/* ─────────────────────────────────────────────────────────────
+   Baby Engineer vs. Data Engineer · estética arcade 8/16 bits
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --k: #140c2e;
+  --noche: #141a52;
+  --azul: #1b2378;
+  --azul-electrico: #2c5cf6;
+  --amarillo: #ffd23f;
+  --naranja: #ff6b1a;
+  --verde: #22c55e;
+  --verde-oscuro: #14803e;
+  --magenta: #ff3fa4;
+  --magenta-oscuro: #c2186a;
+  --cian: #35e0ff;
+  --crema: #f6ecd2;
+  --lila: #c9d3ff;
+  --pixel: 'Press Start 2P', 'Courier New', monospace;
+  --texto: 'VT323', 'Courier New', monospace;
+  --borde: 6px;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Escala con la pantalla: pensada para proyector 16:9. */
+  font-size: clamp(12px, 1.3vh + 0.42vw, 26px);
+  background: var(--noche);
+}
+
+body {
+  margin: 0;
+  background: var(--noche);
+  color: var(--crema);
+  font-family: var(--texto);
+  -webkit-font-smoothing: none;
+  overflow: hidden;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 4px dashed var(--amarillo);
+  outline-offset: 8px;
+}
+
+.arcade {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.pantalla {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  animation: encender 0.8s steps(8) both;
+}
+
+.escenario {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+@keyframes encender {
+  0% {
+    transform: scale(0.6, 0.004);
+    filter: brightness(5);
+  }
+  45% {
+    transform: scale(1, 0.004);
+    filter: brightness(3);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ── Animaciones "a saltos" ─────────────────────────────────── */
+
+@keyframes parpadeo {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes flotar-pixel {
+  to {
+    translate: 0 -14px;
+  }
+}
+
+@keyframes saltito {
+  50% {
+    translate: 0 -5%;
+  }
+}
+
+@keyframes festejo {
+  50% {
+    translate: 0 -14%;
+  }
+}
+
+@keyframes mareo {
+  0%,
+  100% {
+    rotate: -7deg;
+  }
+  50% {
+    rotate: 7deg;
+  }
+}
+
+@keyframes temblor {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  20% {
+    translate: -14px 6px;
+  }
+  40% {
+    translate: 12px -6px;
+  }
+  60% {
+    translate: -8px 4px;
+  }
+  80% {
+    translate: 6px -2px;
+  }
+}
+
+@keyframes titilar {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes rayas {
+  to {
+    translate: 169.7px 0;
+  }
+}
+
+@keyframes destello {
+  50% {
+    background: var(--amarillo);
+    color: var(--k);
+  }
+}
+
+.parpadeo {
+  animation: parpadeo 1s steps(1) infinite;
+}
+
+.flotar {
+  animation: flotar-pixel 1.6s steps(3) infinite alternate;
+}
+
+.flotar--lento {
+  animation-duration: 2.4s;
+}
+
+.saltito {
+  animation: saltito 0.8s steps(1) infinite;
+}
+
+.saltito--desfase {
+  animation-delay: -0.4s;
+}
+
+.festejo {
+  animation: festejo 0.5s steps(1) infinite;
+}
+
+.mareo {
+  animation: mareo 0.6s steps(2) infinite;
+  transform-origin: 50% 100%;
+}
+
+.temblor {
+  animation: temblor 0.45s steps(6) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parpadeo,
+  .flotar,
+  .saltito,
+  .festejo,
+  .mareo,
+  .temblor,
+  .estrella,
+  .flotante,
+  .splash__rayas,
+  .pantalla {
+    animation: none !important;
+  }
+}
+
+/* ── Fondo: noche arcade con ciudad pixelada ────────────────── */
+
+.fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, #2a35a8 0%, #1b2378 45%, #121750 100%);
+  --brillo: var(--naranja);
+}
+
+.fondo--data {
+  --brillo: var(--verde);
+}
+
+.fondo--baby {
+  --brillo: var(--magenta);
+}
+
+.fondo--bonus,
+.fondo--final {
+  --brillo: var(--amarillo);
+}
+
+.fondo__brillo {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at 50% 75%, var(--brillo) 0%, transparent 50%);
+  opacity: 0.3;
+}
+
+.fondo__tramado {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.7px);
+  background-size: 8px 8px;
+}
+
+.estrella {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff1c4;
+  animation: titilar 2s steps(1) infinite;
+}
+
+.flotante {
+  position: absolute;
+  width: clamp(26px, 3vw, 60px);
+  opacity: 0.5;
+  animation: flotar-pixel 3s steps(4) infinite alternate;
+}
+
+.flotante svg {
+  display: block;
+  width: 100%;
+}
+
+.flotante--texto {
+  width: auto;
+  font-family: var(--pixel);
+  font-size: 1rem;
+  color: var(--cian);
+  opacity: 0.35;
+}
+
+.ciudad {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 34vh;
+}
+
+.fondo:not(.fondo--inicio) .ciudad {
+  opacity: 0.45;
+}
+
+/* Monitor CRT */
+.crt {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.crt__lineas {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 2px, transparent 2px 4px);
+}
+
+.crt__vineta {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 58%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+/* ── Cajas y globos pixelados ───────────────────────────────── */
+
+.tarjeta-pixel,
+.globo-pixel {
+  position: relative;
+  padding: 1.2rem 1.6rem;
+  background: var(--crema);
+  color: var(--k);
+  box-shadow:
+    0 calc(var(--borde) * -1) 0 0 var(--k),
+    0 var(--borde) 0 0 var(--k),
+    calc(var(--borde) * -1) 0 0 0 var(--k),
+    var(--borde) 0 0 0 var(--k),
+    calc(var(--borde) * 2) calc(var(--borde) * 2) 0 0 rgba(0, 0, 0, 0.4);
+}
+
+.globo-pixel {
+  background: #ffffff;
+}
+
+/* Colita escalonada del globo de diálogo */
+.globo-pixel::before,
+.globo-pixel::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  clip-path: polygon(0 0, 100% 0, 100% 34%, 67% 34%, 67% 67%, 34% 67%, 34% 100%, 0 100%);
+}
+
+.globo-pixel::before {
+  left: 2rem;
+  width: 36px;
+  height: 36px;
+  margin-top: var(--borde);
+  background: var(--k);
+}
+
+.globo-pixel::after {
+  left: calc(2rem + var(--borde));
+  width: 24px;
+  height: 24px;
+  margin-top: -2px;
+  background: #ffffff;
+}
+
+/* ── Botones de máquina arcade ──────────────────────────────── */
+
+.boton-arcade {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 2rem 1.1rem 1.4rem;
+  border: none;
+  background: #ff4b1f;
+  color: #ffffff;
+  font-family: var(--pixel);
+  font-size: 1.3rem;
+  white-space: nowrap;
+  text-shadow: 3px 3px 0 #7a1e00;
+  cursor: pointer;
+  box-shadow:
+    inset -6px -6px 0 0 #b8330a,
+    inset 6px 6px 0 0 #ff9a5c,
+    0 0 0 var(--borde) var(--k),
+    0 12px 0 var(--borde) var(--k);
+  transition: translate 0.08s steps(1);
+}
+
+.boton-arcade:hover {
+  filter: brightness(1.12);
+}
+
+.boton-arcade:active {
+  translate: 0 8px;
+  box-shadow:
+    inset -6px -6px 0 0 #b8330a,
+    inset 6px 6px 0 0 #ff9a5c,
+    0 0 0 var(--borde) var(--k),
+    0 4px 0 var(--borde) var(--k);
+}
+
+.boton-arcade--chico {
+  padding: 0.85rem 1.4rem;
+  font-size: 0.95rem;
+}
+
+.boton-arcade--secundario {
+  background: var(--azul-electrico);
+  text-shadow: 3px 3px 0 #0d1d6e;
+  box-shadow:
+    inset -6px -6px 0 0 #1a3aa8,
+    inset 6px 6px 0 0 #6f95ff,
+    0 0 0 var(--borde) var(--k),
+    0 12px 0 var(--borde) var(--k);
+}
+
+.boton-arcade__perilla {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff 0 14%, var(--amarillo) 15% 60%, #c98a00 61%);
+  box-shadow: 0 0 0 4px var(--k);
+}
+
+kbd {
+  display: inline-block;
+  margin: 0 0.15em;
+  padding: 0.35em 0.5em 0.3em;
+  background: var(--crema);
+  color: var(--k);
+  font-family: var(--pixel);
+  font-size: 0.55rem;
+  box-shadow: 0 4px 0 #8a8fb8;
+  vertical-align: 0.15em;
+}
+
+.codigo {
+  padding: 0 0.3em;
+  background: var(--k);
+  color: var(--cian);
+  font-family: var(--texto);
+  overflow-wrap: anywhere;
+}
+
+/* Placa oscura para textos que quedan sobre la ciudad */
+.duelo__nombre,
+.personaje__nombre,
+.pregunta__ayuda,
+.inicio__presiona,
+.inicio__teclas {
+  padding: 0.45rem 0.8rem;
+  background: rgba(10, 12, 50, 0.88);
+  box-shadow: 0 0 0 4px var(--k);
+}
+
+/* ── Plataforma de ladrillos bajo los personajes ────────────── */
+
+.plataforma {
+  position: relative;
+  width: 72%;
+  height: 2.4vh;
+  min-height: 14px;
+  margin-top: -2px;
+  background-color: var(--verde);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.35) 0 4px, transparent 4px),
+    repeating-linear-gradient(90deg, transparent 0 22px, rgba(0, 0, 0, 0.35) 22px 26px);
+  box-shadow:
+    0 0 0 4px var(--k),
+    0 10px 0 4px rgba(0, 0, 0, 0.35);
+}
+
+.plataforma--baby {
+  background-color: var(--magenta);
+}
+
+.plataforma--bonus {
+  background-color: var(--amarillo);
+}
+
+/* ── Pantalla de título ─────────────────────────────────────── */
+
+.inicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6vh;
+  height: 100%;
+  padding: 2.4vh 4vw 3.4vh;
+  text-align: center;
+}
+
+.inicio__credito {
+  display: flex;
+  gap: 3rem;
+  font-family: var(--pixel);
+  font-size: 0.7rem;
+  color: var(--amarillo);
+}
+
+.titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--pixel);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.titulo__linea {
+  font-size: clamp(1.6rem, min(5.2vw, 9.5vh), 6.6rem);
+}
+
+.titulo__linea--baby {
+  color: var(--amarillo);
+  text-shadow:
+    0.06em 0.06em 0 var(--naranja),
+    0.12em 0.12em 0 var(--magenta-oscuro),
+    0.18em 0.18em 0 var(--k);
+}
+
+.titulo__linea--data {
+  color: var(--crema);
+  text-shadow:
+    0.06em 0.06em 0 var(--verde),
+    0.12em 0.12em 0 var(--verde-oscuro),
+    0.18em 0.18em 0 var(--k);
+}
+
+.titulo__vs {
+  margin: 0.25em 0 0.35em;
+  padding: 0.3em 0.55em 0.25em;
+  background: var(--magenta);
+  color: #ffffff;
+  font-size: clamp(1.2rem, min(3vw, 5.5vh), 3.8rem);
+  text-shadow: 4px 4px 0 #8a0f55;
+  box-shadow:
+    0 0 0 var(--borde) var(--k),
+    12px 12px 0 var(--borde) var(--k);
+}
+
+.cinta {
+  padding: 0.7rem 1.8rem;
+  background: var(--naranja);
+  color: #ffffff;
+  font-family: var(--pixel);
+  font-size: 1.1rem;
+  text-shadow: 3px 3px 0 #8a2d00;
+  box-shadow:
+    0 0 0 var(--borde) var(--k),
+    0 10px 0 var(--borde) rgba(0, 0, 0, 0.35);
+}
+
+.duelo {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 1.3fr) 1fr;
+  align-items: end;
+  gap: 3vw;
+  width: min(1500px, 100%);
+  margin-top: 1vh;
+}
+
+.duelo__lado {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.duelo__personaje {
+  position: relative;
+  z-index: 2;
+  height: min(25vh, 20vw);
+}
+
+.duelo__objeto {
+  position: absolute;
+  height: 6.5vh;
+}
+
+.duelo__objeto--1 {
+  left: 6%;
+  top: 12%;
+}
+
+.duelo__objeto--2 {
+  right: 6%;
+  top: 30%;
+}
+
+.duelo__objeto--3 {
+  left: 10%;
+  top: 46%;
+  height: 5vh;
+}
+
+.duelo__nombre {
+  margin-top: 1.4rem;
+  font-family: var(--pixel);
+  font-size: 0.8rem;
+  color: #ffffff;
+  text-shadow: 3px 3px 0 var(--k);
+}
+
+.duelo__lado--baby .duelo__nombre {
+  color: var(--magenta);
+}
+
+.duelo__lado--data .duelo__nombre {
+  color: var(--verde);
+}
+
+.inicio__intro {
+  align-self: center;
+  margin-bottom: 4vh;
+  font-size: 1.75rem;
+  line-height: 1.1;
+}
+
+.inicio__intro em {
+  font-style: normal;
+  color: var(--magenta-oscuro);
+}
+
+.inicio__intro em + em,
+.inicio__intro em:last-of-type {
+  color: var(--verde-oscuro);
+}
+
+.inicio__reglas {
+  margin-top: 0.9rem;
+  font-family: var(--pixel);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  color: var(--azul-electrico);
+}
+
+.inicio__accion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4vh;
+}
+
+.inicio__presiona {
+  margin-top: 1vh;
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+  color: var(--amarillo);
+}
+
+.inicio__teclas {
+  font-size: 1.3rem;
+  color: var(--lila);
+}
+
+/* ── HUD ────────────────────────────────────────────────────── */
+
+.hud {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto;
+  align-items: center;
+  gap: 2.4vw;
+  padding: 1.3vh 2.4vw;
+  background: rgba(10, 12, 50, 0.82);
+  border-bottom: var(--borde) solid var(--k);
+  font-family: var(--pixel);
+}
+
+.hud__bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.hud__bloque--centro {
+  align-items: center;
+}
+
+.hud__bloque--derecha {
+  align-items: flex-end;
+}
+
+.hud__rotulo {
+  font-size: 0.68rem;
+  color: var(--magenta);
+}
+
+.hud__rotulo--parpadeo {
+  animation: parpadeo 1.2s steps(1) infinite;
+}
+
+.hud__valor {
+  font-size: 1.3rem;
+  color: #ffffff;
+  text-shadow: 3px 3px 0 var(--k);
+}
+
+.hud__valor--record {
+  color: var(--amarillo);
+}
+
+.progreso {
+  display: flex;
+  gap: 7px;
+}
+
+.progreso__celda {
+  width: 1.5rem;
+  height: 0.95rem;
+  background: #2a3590;
+  box-shadow: 0 0 0 3px var(--k);
+}
+
+.progreso__celda--actual {
+  background: var(--amarillo);
+  animation: parpadeo 0.8s steps(1) infinite;
+}
+
+.progreso__celda--ok {
+  background: var(--verde);
+}
+
+.progreso__celda--mal {
+  background: var(--magenta);
+}
+
+.progreso__celda--bonus {
+  width: 2.3rem;
+  box-shadow:
+    0 0 0 3px var(--k),
+    0 0 0 6px var(--amarillo);
+}
+
+.hud__controles {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.hud__boton {
+  display: grid;
+  place-items: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  padding: 0;
+  border: none;
+  background: var(--azul-electrico);
+  color: #ffffff;
+  font-family: var(--pixel);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow:
+    inset -4px -4px 0 #1a3aa8,
+    0 0 0 4px var(--k);
+}
+
+.hud__boton--apagado {
+  background: #4a4f7a;
+  color: #9aa0c8;
+  text-decoration: line-through;
+}
+
+/* ── Pantalla de pregunta ───────────────────────────────────── */
+
+.pregunta {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 2fr);
+  gap: 3.2vw;
+  height: 100%;
+  padding: 2.6vh 3vw 3vh;
+}
+
+.pregunta__lado {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  gap: 1.5vh;
+}
+
+.resultado {
+  width: 100%;
+  margin-bottom: 4vh;
+  transform-origin: 30% 100%;
+}
+
+.resultado__titulo {
+  font-family: var(--pixel);
+  font-size: 1.55rem;
+  line-height: 1.2;
+}
+
+.resultado--ok .resultado__titulo {
+  color: var(--verde-oscuro);
+}
+
+.resultado--mal .resultado__titulo {
+  color: var(--magenta-oscuro);
+}
+
+.resultado__puntos {
+  margin: 0.5rem 0 0.7rem;
+  font-family: var(--pixel);
+  font-size: 0.85rem;
+  color: var(--naranja);
+}
+
+.resultado__respuesta {
+  font-size: 1.6rem;
+  line-height: 1.05;
+}
+
+.resultado__explicacion {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 3px dashed #c4c9e8;
+  font-size: 1.55rem;
+  line-height: 1.05;
+  color: #2a3590;
+}
+
+.personaje {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: auto;
+}
+
+.personaje__sprite {
+  position: relative;
+  z-index: 1;
+  height: 30vh;
+}
+
+.pregunta__lado:has(.resultado) .personaje__sprite {
+  height: 22vh;
+}
+
+.personaje__corona {
+  position: relative;
+  z-index: 2;
+  height: 6vh;
+  margin-bottom: -1.6vh;
+}
+
+.personaje__nombre {
+  margin-top: 1.2rem;
+  font-family: var(--pixel);
+  font-size: 0.85rem;
+  text-align: center;
+  text-shadow: 3px 3px 0 var(--k);
+}
+
+.pregunta--data .personaje__nombre {
+  color: var(--verde);
+}
+
+.pregunta--baby .personaje__nombre {
+  color: var(--magenta);
+}
+
+.pregunta--bonus .personaje__nombre {
+  color: var(--amarillo);
+}
+
+.pregunta__principal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2vh;
+  min-height: 0;
+}
+
+.pregunta__cabecera {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.etiqueta {
+  padding: 0.6rem 0.9rem;
+  background: var(--k);
+  color: #ffffff;
+  font-family: var(--pixel);
+  font-size: 0.72rem;
+}
+
+.etiqueta--data {
+  background: var(--verde);
+  color: #0b3d1c;
+}
+
+.etiqueta--baby {
+  background: var(--magenta);
+}
+
+.etiqueta--bonus {
+  background: var(--amarillo);
+  color: var(--k);
+  animation: destello 0.6s steps(1) infinite;
+}
+
+.pregunta__titulo {
+  margin-bottom: 0.9rem;
+  font-family: var(--pixel);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--naranja);
+  text-transform: uppercase;
+}
+
+.pregunta__intro {
+  margin-bottom: 0.5rem;
+  font-size: 1.65rem;
+  line-height: 1.05;
+  color: #2a3590;
+}
+
+.pregunta__enunciado {
+  font-size: 2.35rem;
+  line-height: 1.05;
+}
+
+.pregunta--bonus .tarjeta-pixel {
+  background: #fff6cf;
+  box-shadow:
+    0 calc(var(--borde) * -1) 0 0 var(--k),
+    0 var(--borde) 0 0 var(--k),
+    calc(var(--borde) * -1) 0 0 0 var(--k),
+    var(--borde) 0 0 0 var(--k),
+    0 0 0 calc(var(--borde) * 2) var(--amarillo),
+    calc(var(--borde) * 3) calc(var(--borde) * 3) 0 calc(var(--borde) * 2) rgba(0, 0, 0, 0.4);
+}
+
+.opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.opcion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  width: 100%;
+  padding: 0.7rem 1.4rem 0.7rem 0.8rem;
+  border: none;
+  background: var(--azul);
+  color: #ffffff;
+  font-family: var(--texto);
+  font-size: 2.05rem;
+  line-height: 1.02;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 var(--borde) var(--k),
+    10px 10px 0 var(--borde) rgba(0, 0, 0, 0.35);
+  transition:
+    translate 0.1s steps(2),
+    background 0.1s steps(1);
+}
+
+.opcion:hover:not(:disabled) {
+  background: var(--azul-electrico);
+  translate: 12px 0;
+}
+
+.opcion:disabled {
+  cursor: default;
+}
+
+.opcion__boton {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3.3rem;
+  height: 3.3rem;
+  border-radius: 50%;
+  background: var(--magenta);
+  color: #ffffff;
+  font-family: var(--pixel);
+  font-size: 1.1rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+  box-shadow:
+    inset -4px -5px 0 rgba(0, 0, 0, 0.3),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.35),
+    0 0 0 4px var(--k);
+}
+
+.opcion--B .opcion__boton {
+  background: var(--amarillo);
+  color: var(--k);
+  text-shadow: none;
+}
+
+.opcion--C .opcion__boton {
+  background: var(--verde);
+}
+
+.opcion .codigo {
+  background: #0b0f3a;
+  color: var(--amarillo);
+}
+
+.opcion__marca {
+  margin-left: auto;
+  font-family: var(--pixel);
+  font-size: 1.6rem;
+}
+
+.opcion--elegida {
+  animation: destello 0.25s steps(1) infinite;
+}
+
+.opcion--correcta {
+  background: var(--verde) !important;
+  color: #062b13;
+  translate: 12px 0;
+}
+
+.opcion--correcta .codigo {
+  background: #0b3d1c;
+  color: #ffffff;
+}
+
+.opcion--incorrecta {
+  background: var(--magenta) !important;
+  animation: temblor 0.45s steps(6) 1;
+}
+
+.opcion--apagada {
+  opacity: 0.4;
+}
+
+.pregunta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 4.6rem;
+}
+
+.pregunta__ayuda {
+  font-family: var(--pixel);
+  font-size: 0.68rem;
+  color: var(--lila);
+}
+
+/* ── Cortinilla de ronda ────────────────────────────────────── */
+
+.splash {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.6vh;
+  overflow: hidden;
+  background: var(--noche);
+  cursor: pointer;
+  --a: var(--verde-oscuro);
+  --b: var(--verde);
+}
+
+.splash--baby {
+  --a: var(--magenta-oscuro);
+  --b: var(--magenta);
+}
+
+.splash--bonus {
+  --a: #ff9d1f;
+  --b: var(--amarillo);
+}
+
+.splash > * {
+  position: relative;
+}
+
+.splash .splash__rayas {
+  position: absolute;
+  inset: -40% -40%;
+  background: repeating-linear-gradient(-45deg, var(--a) 0 60px, var(--b) 60px 120px);
+  animation: rayas 0.9s steps(6) infinite linear;
+}
+
+.splash__ronda {
+  padding: 0.9rem 1.5rem;
+  background: var(--k);
+  color: #ffffff;
+  font-family: var(--pixel);
+  font-size: 1.5rem;
+}
+
+.splash__personaje {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(10px 10px 0 rgba(0, 0, 0, 0.35));
+}
+
+.splash__personaje > svg:last-child {
+  height: 30vh;
+}
+
+.splash__corona {
+  height: 7vh;
+  margin-bottom: -2vh;
+}
+
+.splash__equipo {
+  font-family: var(--pixel);
+  font-size: clamp(2rem, min(5.6vw, 10vh), 6rem);
+  font-weight: 400;
+  color: #ffffff;
+  text-shadow:
+    0.07em 0.07em 0 var(--k),
+    0.12em 0.12em 0 rgba(0, 0, 0, 0.3);
+}
+
+.splash__extra {
+  padding: 0.6rem 1rem;
+  background: #ffffff;
+  color: var(--k);
+  font-family: var(--pixel);
+  font-size: 1.2rem;
+  box-shadow: 0 0 0 var(--borde) var(--k);
+}
+
+.splash__listo {
+  font-family: var(--pixel);
+  font-size: 1.3rem;
+  color: #ffffff;
+  text-shadow: 4px 4px 0 var(--k);
+}
+
+/* ── Efectos ────────────────────────────────────────────────── */
+
+.explosion {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.explosion__pixel {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.panalazo {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.panalazo__panal {
+  position: absolute;
+  top: 0;
+  width: clamp(40px, 5vw, 90px);
+}
+
+.panalazo__panal svg {
+  display: block;
+  width: 100%;
+}
+
+/* ── Pantalla final ─────────────────────────────────────────── */
+
+.final-arcade {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4vh;
+  height: 100%;
+  padding: 2.4vh 3vw 3.6vh;
+}
+
+.final-arcade__titulo {
+  font-family: var(--pixel);
+  font-size: clamp(2rem, min(5vw, 9vh), 5.6rem);
+  font-weight: 400;
+  color: var(--amarillo);
+  text-shadow:
+    0.06em 0.06em 0 var(--naranja),
+    0.12em 0.12em 0 var(--k);
+}
+
+.final-arcade__cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 1fr;
+  align-items: center;
+  gap: 3vw;
+  width: min(1600px, 100%);
+}
+
+.marcador-final,
+.padrino {
+  text-align: center;
+}
+
+.marcador-final__rotulo {
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+  color: #2a3590;
+}
+
+.marcador-final__puntaje {
+  margin: 0.5rem 0 0.2rem;
+  font-family: var(--pixel);
+  font-size: 2.4rem;
+  color: var(--naranja);
+  text-shadow: 4px 4px 0 var(--k);
+}
+
+.marcador-final__maximo {
+  font-size: 1.4rem;
+  color: #6b6f99;
+}
+
+.marcador-final__record {
+  margin-top: 0.4rem;
+  font-family: var(--pixel);
+  font-size: 0.7rem;
+  color: var(--magenta-oscuro);
+}
+
+.marcador-final__detalle {
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marcador-final__detalle li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  border-bottom: 3px dashed #c4c9e8;
+  font-size: 1.7rem;
+}
+
+.marcador-final__rango-rotulo {
+  font-family: var(--pixel);
+  font-size: 0.6rem;
+  color: #6b6f99;
+}
+
+.marcador-final__rango {
+  margin-top: 0.5rem;
+  font-family: var(--pixel);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--verde-oscuro);
+}
+
+.noah {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6vh;
+}
+
+.noah__aviso {
+  font-family: var(--pixel);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--amarillo);
+  text-align: center;
+  text-shadow: 3px 3px 0 var(--k);
+}
+
+.noah__escena {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 36vh;
+}
+
+.noah__bebe {
+  position: relative;
+  z-index: 1;
+  height: 25vh;
+}
+
+.noah__corona {
+  position: relative;
+  z-index: 2;
+  height: 6vh;
+  margin-bottom: -1.6vh;
+}
+
+.noah__corazon,
+.noah__objeto {
+  position: absolute;
+  height: 5vh;
+}
+
+.noah__corazon--1 {
+  left: 12%;
+  top: 6%;
+}
+
+.noah__corazon--2 {
+  right: 14%;
+  top: 22%;
+  height: 4vh;
+}
+
+.noah__objeto--1 {
+  left: 6%;
+  top: 44%;
+  height: 7vh;
+}
+
+.noah__objeto--2 {
+  right: 8%;
+  top: 52%;
+  height: 6vh;
+}
+
+.noah__nombre {
+  font-family: var(--pixel);
+  font-size: 1.2rem;
+  white-space: nowrap;
+  color: #ffffff;
+  text-align: center;
+  text-shadow:
+    4px 4px 0 var(--magenta),
+    8px 8px 0 var(--k);
+}
+
+.padrino__rotulo {
+  font-family: var(--pixel);
+  font-size: 0.62rem;
+  color: var(--magenta-oscuro);
+}
+
+.padrino__titulo {
+  margin: 0.7rem 0;
+  font-family: var(--pixel);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: var(--naranja);
+}
+
+.padrino__nombre {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.padrino__texto {
+  margin-top: 0.7rem;
+  font-size: 1.6rem;
+  line-height: 1.05;
+  color: #2a3590;
+}
+
+.final-arcade__pie {
+  display: flex;
+  align-items: center;
+  gap: 3vw;
+  margin-bottom: 1vh;
+}
+
+.final-arcade__mensaje {
+  max-width: 38em;
+  font-size: 1.6rem;
+  line-height: 1.05;
+}
+
+.final-arcade__botones {
+  display: flex;
+  gap: 2rem;
+}
+
+/* ── Pantallas angostas ─────────────────────────────────────── */
+
+@media (max-width: 900px), (max-aspect-ratio: 1/1) {
+  body {
+    overflow: auto;
+  }
+
+  .arcade {
+    position: relative;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .pantalla {
+    min-height: 100vh;
+  }
+
+  .hud {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hud__bloque--centro {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+
+  .hud__controles {
+    display: none;
+  }
+
+  .progreso {
+    gap: 4px;
+  }
+
+  .progreso__celda {
+    width: 0.9rem;
+  }
+
+  .duelo,
+  .final-arcade__cuerpo {
+    grid-template-columns: 1fr;
+  }
+
+  .duelo__lado--data,
+  .duelo__objeto {
+    display: none;
+  }
+
+  .pregunta {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .pregunta__lado {
+    order: 2;
+  }
+
+  .personaje__sprite {
+    height: 18vh;
+  }
+
+  .final-arcade,
+  .inicio {
+    height: auto;
+  }
+
+  .final-arcade__pie {
+    flex-direction: column;
+  }
+}
