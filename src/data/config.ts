@@ -26,7 +26,7 @@ export const EVENTO = {
  */
 export const ORDEN: string[] = [
   'Rodri', 'Clau', 'Victor', 'Jacky', 'Jose', 'Vale', 'Adrian', 'Biho', 'Jime',
-  'Vane', 'Mauricio', 'David', 'Dani',
+  'Vane', 'Mauricio', 'David', 'Dani', 'Edgard', 'Gary',
 ]
 
 /**
